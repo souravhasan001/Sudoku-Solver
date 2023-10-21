@@ -1,19 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
-void print(int arr[9][9]){
-	cout << "-------------------------" << endl;
-	for (int y = 0; y < 9; y++) {
-		for (int x = 0; x < 9; x++)
-			cout << arr[y][x] << " ";
-		cout << endl;
-	}
-	cout << "-------------------------" << endl;
-
-}
-
-bool canPlace9x9(int arr[9][9], int row, int col, int n){
+bool canPlace(int arr[9][9], int row, int col, int n){
 	if (arr[row][col] != 0) return false;
 	bool status = true;
 	int gridx = (col / 3) * 3;
@@ -25,6 +13,7 @@ bool canPlace9x9(int arr[9][9], int row, int col, int n){
 	}
 	return status;
 }
+
 
 void nextEmpty(int arr[9][9], int row, int col, int& rowNext, int& colNext){
 
@@ -40,25 +29,28 @@ void nextEmpty(int arr[9][9], int row, int col, int& rowNext, int& colNext){
 	colNext = indexNext % 9;
 }
 
+
 void copyArray(int arr[9][9], int arrCpy[9][9]) {
 	for (int y = 0; y < 9; y++)
 		for (int x = 0; x < 9; x++)
 			arrCpy[y][x] = arr[y][x];
 }
+
+
 std::vector<int> findPlaceables(int arr[9][9], int row, int col) {
 	vector<int> placebles = {};
 	for (int n = 1; n <= 9; n++)
-		if (canPlace9x9(arr, row, col, n)) placebles.push_back(n);
+		if (canPlace(arr, row, col, n)) placebles.push_back(n);
 	return placebles;
 }
 
 
-bool solveSudoku9x9(int arr[9][9], int row, int col){
+bool solveSudoku(int arr[9][9], int row, int col){
 	if (row > 8) return true;
 	if (arr[row][col] != 0) {
 		int rowNext, colNext;
 		nextEmpty(arr, row, col, rowNext, colNext);
-		return solveSudoku9x9(arr, rowNext, colNext);
+		return solveSudoku(arr, rowNext, colNext);
 	}
 
 	std::vector<int> placebles = findPlaceables(arr, row, col);
@@ -78,7 +70,7 @@ bool solveSudoku9x9(int arr[9][9], int row, int col){
 		int rowNext = row;
 		int colNext = col;
 		nextEmpty(arrCpy, row, col, rowNext, colNext);
-		if (solveSudoku9x9(arrCpy, rowNext, colNext)) {
+		if (solveSudoku(arrCpy, rowNext, colNext)) {
 			copyArray(arrCpy, arr);
 			status = true;
 			break;
@@ -88,8 +80,19 @@ bool solveSudoku9x9(int arr[9][9], int row, int col){
 }
 
 
-int main(int argc, char** argv)
-{
+void print(int arr[9][9]){
+	cout << "-------------------------" << endl;
+	for (int y = 0; y < 9; y++) {
+		for (int x = 0; x < 9; x++)
+			cout << arr[y][x] << " ";
+		cout << endl;
+	}
+	cout << "-------------------------" << endl;
+
+}
+
+
+int main(int argc, char** argv){
 	int board[9][9] = {
 		{5,3,0,0,7,0,0,0,0},
 		{6,0,0,1,9,5,0,0,0},
@@ -113,9 +116,9 @@ int main(int argc, char** argv)
 		{0,9,0,0,0,0,4,0,0}
 	};
 	
-	if (solveSudoku9x9(board, 0, 0)) cout << "successfully solved board!" << std::endl;
+	if (solveSudoku(board, 0, 0)) cout << "successfully solved board!" << std::endl;
 	print(board);
-	if (solveSudoku9x9(board2, 0, 0)) cout << "successfully solved board 2!" << std::endl;
+	if (solveSudoku(board2, 0, 0)) cout << "successfully solved board 2!" << std::endl;
 	print(board2);
 
 	return 0;
